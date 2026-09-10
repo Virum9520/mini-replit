@@ -9,6 +9,7 @@ import {
   type RunnerPostMessage,
 } from '../runner/types'
 import { buildHtmlDoc, buildJsDoc } from '../runner/webRunner'
+import { runPython } from '../runner/pythonRunner'
 import FileTree from './FileTree'
 import ConsolePane from './ConsolePane'
 import './Ide.css'
@@ -59,9 +60,10 @@ export default function Ide() {
     return () => window.removeEventListener('message', onMessage)
   }, [pushMessage])
 
+  const [pythonRunning, setPythonRunning] = useState(false)
   const runningRef = useRef(false)
 
-  const handleRun = useCallback(() => {
+  const handleRun = useCallback(async () => {
     if (!active || runningRef.current) return
     const lang = languageFor(active)
 
@@ -84,7 +86,25 @@ export default function Ide() {
       }
       setPreviewKey((k) => k + 1)
     } else if (lang === 'python') {
-      pushMessage('warn', 'Python support arrives in the next update — stay tuned!')
+      runningRef.current = true
+      setPythonRunning(true)
+      pushMessage('system', `Running ${active} …`)
+      try {
+        await runPython(state.files, active, {
+          onStdout: (text) => pushMessage('log', text),
+          onStderr: (text) => pushMessage('error', text),
+          onStatus: (text) => pushMessage('system', text),
+        })
+        pushMessage('system', `${active} finished.`)
+      } catch (err) {
+        pushMessage(
+          'error',
+          `Failed to run Python: ${err instanceof Error ? err.message : String(err)}`,
+        )
+      } finally {
+        runningRef.current = false
+        setPythonRunning(false)
+      }
     } else {
       pushMessage('warn', `Cannot run ${active} — try a .py, .js or .html file.`)
     }
@@ -106,10 +126,10 @@ export default function Ide() {
           <button
             className="mc-button mc-button-green ide-run"
             onClick={handleRun}
-            disabled={!active}
+            disabled={!active || pythonRunning}
             title="Run the active file"
           >
-            ▶ RUN
+            {pythonRunning ? '⛏ MINING…' : '▶ RUN'}
           </button>
         </div>
       </header>
