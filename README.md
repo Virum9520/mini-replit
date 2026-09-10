@@ -8,6 +8,10 @@ real Python and JavaScript execution, and an AI-style **Cloud Architect** that
 designs AWS architectures live as you tweak requirements. All of it skinned as
 a Minecraft server, because side projects should be fun to open.
 
+![Minecraft-styled password gate](docs/screenshots/login.png)
+
+Past the gate, it's a working IDE — here running Python in the browser:
+
 ![Python running in the browser via Pyodide](docs/screenshots/ide-python-run.png)
 
 ---
