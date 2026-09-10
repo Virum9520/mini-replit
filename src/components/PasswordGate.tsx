@@ -39,9 +39,9 @@ export default function PasswordGate({ onUnlock }: PasswordGateProps) {
 
         <p className="gate-subtitle">Minecraft-Themed Browser IDE</p>
         <p className="gate-motd">
-          <span className="mc-dim">A private server for </span>
-          <span className="mc-aqua">Replit recruiters</span>
-          <span className="mc-dim"> — enter the password to join.</span>
+          <span className="mc-dim">A private server — enter the </span>
+          <span className="mc-aqua">password</span>
+          <span className="mc-dim"> to join.</span>
         </p>
 
         <form className="gate-form" onSubmit={handleSubmit}>
@@ -72,7 +72,7 @@ export default function PasswordGate({ onUnlock }: PasswordGateProps) {
       </div>
 
       <p className="gate-footer mc-dim">
-        Not affiliated with Mojang or Replit — a portfolio project.
+        Not affiliated with Mojang or Replit — a fan-made project.
       </p>
     </div>
   )
