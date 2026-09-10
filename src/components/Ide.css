@@ -207,3 +207,36 @@
   min-height: 0;
   overflow: hidden;
 }
+
+/* ---------- Responsive: stack panels on narrow screens ---------- */
+@media (max-width: 1100px) {
+  .ide {
+    overflow-y: auto;
+  }
+
+  .ide-body {
+    flex-direction: column;
+  }
+
+  .ide-sidebar {
+    width: 100%;
+    max-height: 180px;
+  }
+
+  .ide-main {
+    min-height: 380px;
+  }
+
+  .ide-right {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    min-height: 260px;
+  }
+
+  .ide-preview,
+  .ide-console {
+    flex: 1;
+    min-width: 0;
+  }
+}
