@@ -148,6 +148,11 @@
   padding: 8px 16px;
 }
 
+.ide-architect-btn {
+  font-size: 9px;
+  padding: 9px 12px;
+}
+
 /* ---------- Right panel: preview + console ---------- */
 .ide-right {
   display: flex;

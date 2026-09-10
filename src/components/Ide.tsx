@@ -12,6 +12,7 @@ import { buildHtmlDoc, buildJsDoc } from '../runner/webRunner'
 import { runPython } from '../runner/pythonRunner'
 import FileTree from './FileTree'
 import ConsolePane from './ConsolePane'
+import CloudArchitect from './CloudArchitect'
 import './Ide.css'
 
 function defineMinecraftTheme(monaco: Monaco) {
@@ -61,6 +62,7 @@ export default function Ide() {
   }, [pushMessage])
 
   const [pythonRunning, setPythonRunning] = useState(false)
+  const [architectOpen, setArchitectOpen] = useState(false)
   const runningRef = useRef(false)
 
   const handleRun = useCallback(async () => {
@@ -123,6 +125,13 @@ export default function Ide() {
           <span className="ide-header-hint mc-dim">
             {active ? languageFor(active) : 'no file'}
           </span>
+          <button
+            className="mc-button ide-architect-btn"
+            onClick={() => setArchitectOpen(true)}
+            title="Open the AI Deploy Advisor"
+          >
+            ☁ CLOUD ARCHITECT
+          </button>
           <button
             className="mc-button mc-button-green ide-run"
             onClick={handleRun}
@@ -218,6 +227,13 @@ export default function Ide() {
           </div>
         </section>
       </div>
+
+      {architectOpen && (
+        <CloudArchitect
+          files={state.files}
+          onClose={() => setArchitectOpen(false)}
+        />
+      )}
     </div>
   )
 }
