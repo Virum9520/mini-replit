@@ -6,21 +6,22 @@
 A Replit-inspired IDE that runs **entirely in the browser** — Monaco editor,
 real Python and JavaScript execution, and an AI-style **Cloud Architect** that
 designs AWS architectures live as you tweak requirements. All of it skinned as
-a Minecraft server, because portfolio projects should be fun to open.
+a Minecraft server, because side projects should be fun to open.
 
-Built as a portfolio project for Replit's SDE New Grad role.
+![Python running in the browser via Pyodide](docs/screenshots/ide-python-run.png)
 
 ---
 
-## Why this project (for the Replit team)
+## Highlights
 
-- **It mirrors your product.** File tree, editor tabs, a Run button, a console,
-  and a deployments advisor — the core loop of Replit, reimplemented small.
-- **It mirrors your stack.** TypeScript + React on the front end, with an
-  emphasis on making code execution feel instant.
-- **It takes "run code in the browser" seriously.** No backend anywhere: the
-  whole thing is static files on GitHub Pages, yet it executes real CPython
-  and sandboxed JavaScript.
+- **A real IDE loop, no backend anywhere.** File tree, editor tabs, a Run
+  button, a console, and a deployments advisor — served as static files from
+  GitHub Pages, yet it executes real CPython and sandboxed JavaScript.
+- **TypeScript + React throughout**, with an emphasis on making code execution
+  feel instant.
+- **Explainable "AI".** The Cloud Architect looks like an AI advisor but is a
+  deterministic heuristics engine — every recommendation is reproducible, and
+  it works on a static host forever with no API keys.
 
 ## How code execution works
 
@@ -58,9 +59,15 @@ The differentiator. Open **☁ Cloud Architect** in the header and the advisor:
 4. **Explains itself** — chat-style reasoning lines, a per-component "why",
    and a monthly cost tier for every recommendation.
 
-It's presented as an AI advisor, but it's a **deterministic heuristics
-engine** — pure TypeScript, no LLM, no API keys. Every recommendation is
-reproducible and explainable, and it works on a static host forever.
+A low-traffic app with a database gets a serverless design:
+
+![Cloud Architect recommending a serverless architecture](docs/screenshots/cloud-architect-serverless.png)
+
+Drag the traffic slider to 10,000 RPS and the same app is re-architected onto
+containers with a load balancer, Multi-AZ RDS, and a cache — with DeployBot
+explaining why per-request Lambda pricing stops making sense:
+
+![Cloud Architect morphing to a high-traffic architecture](docs/screenshots/cloud-architect-high-traffic.png)
 
 ## Tech stack
 
@@ -81,8 +88,8 @@ npm run dev     # http://localhost:5173/mini-replit/
 npm run build   # type-check + production build
 ```
 
-Password on the gate: `For_Replit` (client-side only — it's a portfolio
-gate, not security).
+Password on the gate: `For_Replit` (client-side only — it's an access gate,
+not security).
 
 ## Project structure
 
@@ -97,4 +104,4 @@ src/
 
 ---
 
-*Not affiliated with Mojang or Replit — a fan-made portfolio project.*
+*Not affiliated with Mojang or Replit — a fan-made project.*
