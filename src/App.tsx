@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PasswordGate, { UNLOCK_KEY } from './components/PasswordGate'
+import Ide from './components/Ide'
 
 function App() {
   const [unlocked, setUnlocked] = useState(
@@ -10,11 +11,7 @@ function App() {
     return <PasswordGate onUnlock={() => setUnlocked(true)} />
   }
 
-  return (
-    <div className="app">
-      <h1 style={{ padding: 24 }}>Mini-Replit — IDE coming soon…</h1>
-    </div>
-  )
+  return <Ide />
 }
 
 export default App
