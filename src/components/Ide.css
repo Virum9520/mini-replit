@@ -141,3 +141,64 @@
   gap: 8px;
   font-size: 10px;
 }
+
+/* ---------- Run button ---------- */
+.ide-run {
+  font-size: 11px;
+  padding: 8px 16px;
+}
+
+/* ---------- Right panel: preview + console ---------- */
+.ide-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 34%;
+  min-width: 300px;
+  flex: none;
+  min-height: 0;
+}
+
+.ide-preview {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.ide-preview-header {
+  padding: 8px 10px;
+  border-bottom: 2px solid #151515;
+  flex: none;
+}
+
+.ide-preview-title {
+  font-size: 9px;
+  color: var(--mc-gold);
+  text-shadow: 1px 1px 0 #000;
+}
+
+.ide-preview-frame {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border: none;
+  background: #fff;
+}
+
+.ide-preview-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  padding: 12px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.ide-console {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

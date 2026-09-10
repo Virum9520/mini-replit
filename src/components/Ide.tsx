@@ -1,7 +1,16 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Editor, { type Monaco } from '@monaco-editor/react'
 import { useWorkspace } from '../hooks/useWorkspace'
 import { languageFor } from '../workspace'
+import {
+  RUNNER_MESSAGE_SOURCE,
+  type ConsoleLevel,
+  type ConsoleMessage,
+  type RunnerPostMessage,
+} from '../runner/types'
+import { buildHtmlDoc, buildJsDoc } from '../runner/webRunner'
 import FileTree from './FileTree'
+import ConsolePane from './ConsolePane'
 import './Ide.css'
 
 function defineMinecraftTheme(monaco: Monaco) {
@@ -24,10 +33,62 @@ function defineMinecraftTheme(monaco: Monaco) {
   })
 }
 
+let messageId = 0
+
 export default function Ide() {
   const workspace = useWorkspace()
   const { state, setActive, closeTab, updateContent } = workspace
   const active = state.activeFile
+
+  const [messages, setMessages] = useState<ConsoleMessage[]>([])
+  const [previewDoc, setPreviewDoc] = useState<string | null>(null)
+  const [previewKey, setPreviewKey] = useState(0)
+
+  const pushMessage = useCallback((level: ConsoleLevel, text: string) => {
+    setMessages((prev) => [...prev, { id: messageId++, level, text }])
+  }, [])
+
+  // Receive console output forwarded from the sandboxed iframe.
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      const data = e.data as RunnerPostMessage | undefined
+      if (data?.source !== RUNNER_MESSAGE_SOURCE) return
+      pushMessage(data.level, data.text)
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [pushMessage])
+
+  const runningRef = useRef(false)
+
+  const handleRun = useCallback(() => {
+    if (!active || runningRef.current) return
+    const lang = languageFor(active)
+
+    if (lang === 'html') {
+      pushMessage('system', `Running ${active} …`)
+      setPreviewDoc(buildHtmlDoc(state.files, active))
+      setPreviewKey((k) => k + 1)
+    } else if (lang === 'javascript') {
+      // If an HTML file references this script, run the page for full context.
+      const htmlEntry = Object.keys(state.files).find(
+        (name) =>
+          languageFor(name) === 'html' && state.files[name].includes(active),
+      )
+      if (htmlEntry) {
+        pushMessage('system', `Running ${htmlEntry} (references ${active}) …`)
+        setPreviewDoc(buildHtmlDoc(state.files, htmlEntry))
+      } else {
+        pushMessage('system', `Running ${active} …`)
+        setPreviewDoc(buildJsDoc(state.files, active))
+      }
+      setPreviewKey((k) => k + 1)
+    } else if (lang === 'python') {
+      pushMessage('warn', 'Python support arrives in the next update — stay tuned!')
+    } else {
+      pushMessage('warn', `Cannot run ${active} — try a .py, .js or .html file.`)
+    }
+  }, [active, state.files, pushMessage])
 
   return (
     <div className="ide">
@@ -42,6 +103,14 @@ export default function Ide() {
           <span className="ide-header-hint mc-dim">
             {active ? languageFor(active) : 'no file'}
           </span>
+          <button
+            className="mc-button mc-button-green ide-run"
+            onClick={handleRun}
+            disabled={!active}
+            title="Run the active file"
+          >
+            ▶ RUN
+          </button>
         </div>
       </header>
 
@@ -104,6 +173,30 @@ export default function Ide() {
             )}
           </div>
         </main>
+
+        <section className="ide-right">
+          <div className="ide-preview mc-panel">
+            <div className="ide-preview-header">
+              <span className="ide-preview-title">PREVIEW</span>
+            </div>
+            {previewDoc !== null ? (
+              <iframe
+                key={previewKey}
+                className="ide-preview-frame"
+                title="Preview"
+                sandbox="allow-scripts"
+                srcDoc={previewDoc}
+              />
+            ) : (
+              <div className="ide-preview-empty mc-dim">
+                Run an HTML or JS file to see it here.
+              </div>
+            )}
+          </div>
+          <div className="ide-console mc-panel">
+            <ConsolePane messages={messages} onClear={() => setMessages([])} />
+          </div>
+        </section>
       </div>
     </div>
   )
