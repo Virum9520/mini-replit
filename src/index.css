@@ -1,0 +1,17 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #1b1b1b;
+  color: #e8e8e8;
+  font-family: system-ui, sans-serif;
+}
